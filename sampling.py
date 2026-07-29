@@ -85,7 +85,8 @@ def apply_saturation(field, mode, max_amp, hard_clamp_val, min_scale=0.10):
     elif mode == "softplus":
         # Softplus provides smooth, always-positive saturation
         # Scale around 1.0 with controlled amplitude
-        return 1.0 + torch.nn.functional.softplus(field) - torch.nn.functional.softplus(torch.zeros_like(field))
+        delta = torch.nn.functional.softplus(field) - torch.nn.functional.softplus(torch.zeros_like(field))
+        return 1.0 + delta.clamp(max=max_amp)
     return (1.0 + field).clamp(min=min_scale, max=1.0 + hard_clamp_val)
 
 
