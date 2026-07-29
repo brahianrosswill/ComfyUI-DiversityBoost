@@ -263,6 +263,13 @@ def build_diversity_fn(strength=2.0, clamp_val=0.5, noise_type="pink",
         midfreq_start:     Normalized start of mid-frequency band [0, 1].
         midfreq_end:       Normalized end of mid-frequency band [0, 1].
     """
+    # Validate mid-frequency bounds
+    if not (0 <= midfreq_start < midfreq_end <= 1):
+        raise ValueError(
+            f"Invalid mid-frequency band: midfreq_start={midfreq_start}, "
+            f"midfreq_end={midfreq_end}. Required: 0 <= midfreq_start < midfreq_end <= 1"
+        )
+
     n_modes_h = n_modes_w = dct_basis_size
     n_modes = n_modes_h * n_modes_w
     freq_weights = _build_noise_weights(noise_type, n_modes_h, n_modes_w)
