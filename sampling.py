@@ -77,10 +77,16 @@ def apply_saturation(field, mode, max_amp, hard_clamp_val, min_scale=0.10):
     """Map normalized field to multiplicative scale.
 
     mode="tanh": smooth symmetric saturation, scale ∈ [1-max_amp, 1+max_amp]
-    mode="hard" : clamp(1+field, min_scale, 1+hard_clamp_val)
+    mode="softplus": smooth asymmetric saturation with softplus curve
+    mode="hard": clamp(1+field, min_scale, 1+hard_clamp_val)
     """
     if mode == "tanh":
         return 1.0 + torch.tanh(field) * max_amp
+    elif mode == "softplus":
+        # Softplus provides smooth, always-positive saturation
+        # Scale around 1.0 with controlled amplitude
+        delta = torch.nn.functional.softplus(field) - torch.nn.functional.softplus(torch.zeros_like(field))
+        return 1.0 + delta.clamp(max=max_amp)
     return (1.0 + field).clamp(min=min_scale, max=1.0 + hard_clamp_val)
 
 
