@@ -1,38 +1,8 @@
-```
-# Compiled Python files
-*.pyc
-__pycache__/
+# Examples 1:
+BUG_ANALYSIS.md
 
-# Dependencies
-.venv/
-venv/
-node_modules/
-
-# Logs and temporary files
-*.log
-*.tmp
-*.swp
-
-# Environment files
-.env
+# Examples 2:
+pycache/main.cpython-310.pyc
+dist/app.js
 .env.local
-*.env.*
-
-# Editors
-.vscode/
-.idea/
-
-# Build artifacts
-dist/
-build/
-target/
-
-# Coverage reports
-coverage/
-htmlcov/
-.coverage
-
-# Python cache
-.mypy_cache/
-.pytest_cache/
-```
+.vscode/settings.json
