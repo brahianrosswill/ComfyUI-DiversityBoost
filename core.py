@@ -95,7 +95,8 @@ def _build_midfreq_mask(H, W, patch_size, preserve_start=0.3, preserve_end=0.7):
     high_transition = 0.5 * (1.0 + torch.tanh((preserve_end - r_tilde) / transition_width))
     mask = low_transition * high_transition
     
-    # Ensure DC is not affected (will be handled by dc_preserve separately)
+    # Ensure DC is not affected by mid-frequency preservation
+    # (DC handling is controlled separately by dc_preserve parameter)
     mask[0, 0] = 0.0
     
     return mask.unsqueeze(0).unsqueeze(0)
@@ -357,8 +358,9 @@ def build_diversity_fn(strength=2.0, clamp_val=0.5, noise_type="pink",
         # --- Step 2: DCT composition push on modulated result ---
         if effective_strength > 1e-6:
             # Set seed for reproducibility if specified
+            # Note: DCT push only occurs at step 0, so step_index is always 0 here
             if seed is not None:
-                generator = torch.Generator(device=device).manual_seed(seed + step_index)
+                generator = torch.Generator(device=device).manual_seed(seed)
                 coeffs = torch.randn(B, n_modes, device=device, dtype=torch.float32, generator=generator)
             else:
                 coeffs = torch.randn(B, n_modes, device=device, dtype=torch.float32)
